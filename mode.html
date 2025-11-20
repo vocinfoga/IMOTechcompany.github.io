@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMOTech Electronics</title>
+    <style>
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            color: white;
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-left: 2rem;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #fdbb2d;
+        }
+        
+        /* Page Styles */
+        .page {
+            display: none;
+            padding: 3rem 0;
+            min-height: calc(100vh - 140px);
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a6c, #0a2e0a);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        
+        .loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid rgba(255, 255, 255, 0.3);
+            border-top: 8px solid #fdbb2d;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin-bottom: 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        
+        .loading-progress {
+            width: 300px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .loading-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #fdbb2d, #b21f1f);
+            transition: width 0.3s ease;
+        }
+        
+        /* Home Page */
+        #home {
+            position: relative;
+            background: linear-gradient(135deg, #0a2e0a, #1a5c1a, #0a2e0a);
+            color: white;
+            overflow: hidden;
+        }
+        
+        .bubbles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+        
+        .bubble {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            animation: float 15s infinite ease-in-out;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-20px) translateX(10px);
+            }
+            50% {
+                transform: translateY(-40px) translateX(-10px);
+            }
+            75% {
+                transform: translateY(-20px) translateX(10px);
+            }
+        }
+        
+        .home-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 5rem 0;
+            text-align: center;
+            border-radius: 10px;
+            margin-bottom: 3rem;
+            backdrop-filter: blur(5px);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .benefits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .benefit-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .benefit-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .benefit-card h3 {
+            color: #fdbb2d;
+            margin-bottom: 1rem;
+        }
+        
+        /* Account Page */
+        #account {
+            position: relative;
+            background: linear-gradient(135deg, #0a1931, #1a3a6c, #0a1931);
+            color: white;
+            overflow: hidden;
+        }
+        
+        #account .bubble {
+            animation: float-account 8s infinite ease-in-out;
+        }
+        
+        @keyframes float-account {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-30px) translateX(15px);
+            }
+            50% {
+                transform: translateY(-60px) translateX(-15px);
+            }
+            75% {
+                transform: translateY(-30px) translateX(15px);
+            }
+        }
+        
+        .account-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 60vh;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .account-box {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .account-box h2 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #fdbb2d;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 5px;
+            font-size: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+        
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #fdbb2d, #b21f1f);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s;
+            width: 100%;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .toggle-form {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+        
+        .toggle-form a {
+            color: #fdbb2d;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        /* Products Page */
+        #products {
+            position: relative;
+            background: linear-gradient(135deg, #0a1931, #1a3a6c, #0a1931);
+            color: white;
+            overflow: hidden;
+        }
+        
+        #products .bubble {
+            animation: float-products 6s infinite ease-in-out;
+        }
+        
+        @keyframes float-products {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+            }
+            25% {
+                transform: translateY(-40px) translateX(20px);
+            }
+            50% {
+                transform: translateY(-80px) translateX(-20px);
+            }
+            75% {
+                transform: translateY(-40px) translateX(20px);
+            }
+        }
+        
+        .products-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .product-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-img {
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #fdbb2d;
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-info h3 {
+            margin-bottom: 0.5rem;
+            color: #fdbb2d;
+        }
+        
+        .maintenance-section {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .maintenance-section h2 {
+            color: #fdbb2d;
+            margin-bottom: 1rem;
+        }
+        
+        /* Access Restricted Message */
+        .access-restricted {
+            text-align: center;
+            padding: 3rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin: 2rem 0;
+        }
+        
+        .access-restricted h2 {
+            color: #fdbb2d;
+            margin-bottom: 1.5rem;
+        }
+        
+        /* Footer */
+        footer {
+            background: #1a2a6c;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-container {
+                flex-direction: column;
+            }
+            
+            .nav-links {
+                margin-top: 1rem;
+            }
+            
+            .nav-links li {
+                margin: 0 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .hero p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loader"></div>
+        <div class="loading-text">Loading IMOTech Electronics</div>
+        <div class="loading-progress">
+            <div class="loading-bar" id="loadingBar"></div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="logo">IMOTech Electronics</a>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link" data-page="home">Home</a></li>
+                <li><a href="#" class="nav-link" data-page="account">Account</a></li>
+                <li><a href="#" class="nav-link" data-page="products">Products</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <section id="home" class="page">
+        <div class="bubbles" id="home-bubbles"></div>
+        <div class="container home-content">
+            <div class="hero">
+                <h1>Welcome to IMOTech Electronics</h1>
+                <p>Your trusted partner for high-quality electronic devices and solutions. Experience the future of technology with our premium products.</p>
+                <button class="btn" onclick="showPageWithLoading('products')">Explore Products</button>
+            </div>
+            
+            <h2 style="text-align: center; margin-bottom: 2rem; color: #fdbb2d;">Benefits of Modern Electronic Devices</h2>
+            
+            <div class="benefits">
+                <div class="benefit-card">
+                    <h3>Enhanced Productivity</h3>
+                    <p>Modern devices with faster processors and advanced features help you accomplish tasks more efficiently, saving you valuable time and effort.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3>Superior Performance</h3>
+                    <p>High-quality components ensure reliable performance even during demanding tasks, providing a seamless user experience.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3>Long-Term Reliability</h3>
+                    <p>Premium materials and rigorous testing mean our devices last longer, offering better value for your investment.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3>Advanced Connectivity</h3>
+                    <p>Stay connected with the latest connectivity options, ensuring compatibility with all your other devices and networks.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3>Energy Efficiency</h3>
+                    <p>Modern electronics are designed to consume less power, reducing your electricity bills and environmental impact.</p>
+                </div>
+                
+                <div class="benefit-card">
+                    <h3>Future-Proof Technology</h3>
+                    <p>Our devices incorporate the latest technologies, ensuring they remain relevant and functional for years to come.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Account Page -->
+    <section id="account" class="page">
+        <div class="bubbles" id="account-bubbles"></div>
+        <div class="container account-container">
+            <div class="account-box">
+                <div id="login-form">
+                    <h2>Login to Your Account</h2>
+                    <div class="form-group">
+                        <label for="login-email">Email</label>
+                        <input type="email" id="login-email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password">
+                    </div>
+                    <button class="btn" onclick="login()">Login</button>
+                    <div class="toggle-form">
+                        <p>Don't have an account? <a href="#" onclick="toggleForm()">Create Account</a></p>
+                    </div>
+                </div>
+                
+                <div id="register-form" style="display: none;">
+                    <h2>Create New Account</h2>
+                    <div class="form-group">
+                        <label for="register-name">Full Name</label>
+                        <input type="text" id="register-name" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-email">Email</label>
+                        <input type="email" id="register-email" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-password">Password</label>
+                        <input type="password" id="register-password" placeholder="Create a password">
+                    </div>
+                    <div class="form-group">
+                        <label for="register-confirm">Confirm Password</label>
+                        <input type="password" id="register-confirm" placeholder="Confirm your password">
+                    </div>
+                    <button class="btn" onclick="register()">Create Account</button>
+                    <div class="toggle-form">
+                        <p>Already have an account? <a href="#" onclick="toggleForm()">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Page -->
+    <section id="products" class="page">
+        <div class="bubbles" id="products-bubbles"></div>
+        <div class="container products-content">
+            <h1 style="text-align: center; margin-bottom: 2rem; color: #fdbb2d;">Our Electronic Products</h1>
+            
+            <!-- Access Restricted Message (shown when user is not logged in) -->
+            <div id="access-restricted" class="access-restricted" style="display: none;">
+                <h2>Access Restricted</h2>
+                <p>You need to create an account or login to access our products.</p>
+                <button class="btn" onclick="showPageWithLoading('account')">Go to Account</button>
+            </div>
+            
+            <!-- Products Content (shown when user is logged in) -->
+            <div id="products-content">
+                <div class="products-grid">
+                    <div class="product-card">
+                        <div class="product-img">💻</div>
+                        <div class="product-info">
+                            <h3>Computers & Laptops</h3>
+                            <p>High-performance desktops and laptops for all your computing needs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">🧠</div>
+                        <div class="product-info">
+                            <h3>RAM Memory</h3>
+                            <p>Upgrade your system with our high-speed, reliable RAM modules.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">💾</div>
+                        <div class="product-info">
+                            <h3>SSD Storage</h3>
+                            <p>Lightning-fast solid state drives for improved system performance.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">🖴</div>
+                        <div class="product-info">
+                            <h3>HDD Storage</h3>
+                            <p>High-capacity hard disk drives for all your storage needs.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">🔋</div>
+                        <div class="product-info">
+                            <h3>UPS Systems</h3>
+                            <p>Uninterruptible power supply units to protect your equipment.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="product-card">
+                        <div class="product-img">🔌</div>
+                        <div class="product-info">
+                            <h3>Cables & Connectors</h3>
+                            <p>High-quality cables and connectors for all your connectivity needs.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="maintenance-section">
+                    <h2>Professional Maintenance Services</h2>
+                    <p>At IMOTech Electronics, we don't just sell high-quality electronic devices - we also provide comprehensive maintenance services to ensure your equipment continues to perform at its best. Our team of certified technicians offers:</p>
+                    <ul style="list-style: none; margin: 1rem 0;">
+                        <li>• Regular maintenance and cleaning</li>
+                        <li>• Hardware diagnostics and repairs</li>
+                        <li>• Software installation and optimization</li>
+                        <li>• Data backup and recovery services</li>
+                        <li>• Performance tuning and upgrades</li>
+                    </ul>
+                    <p>Keep your devices running smoothly with our expert maintenance plans tailored to your specific needs.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 IMOTech Electronics. All rights reserved.</p>
+            <p>Your trusted partner for premium electronic devices and services.</p>
+        </div>
+    </footer>
+
+    <script>
+        // User authentication state
+        let isLoggedIn = false;
+        let currentUser = null;
+
+        // Initial page load with loading animation
+        document.addEventListener('DOMContentLoaded', function() {
+            // Start initial loading animation
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingBar = document.getElementById('loadingBar');
+            
+            // Show loading screen
+            loadingScreen.classList.remove('hidden');
+            loadingBar.style.width = '0%';
+            
+            // Simulate initial loading progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                loadingBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Hide loading screen and show home page
+                    setTimeout(() => {
+                        loadingScreen.classList.add('hidden');
+                        document.getElementById('home').classList.add('active');
+                    }, 300);
+                }
+            }, 250); // 5 seconds total loading time
+            
+            // Initialize bubbles
+            createBubbles('home-bubbles', 15);
+            createBubbles('account-bubbles', 20);
+            createBubbles('products-bubbles', 25);
+        });
+
+        // Page Navigation with Loading
+        function showPageWithLoading(pageId) {
+            // Check if user is trying to access products without account
+            if (pageId === 'products' && !isLoggedIn) {
+                // Show loading screen
+                const loadingScreen = document.getElementById('loadingScreen');
+                const loadingBar = document.getElementById('loadingBar');
+                loadingScreen.classList.remove('hidden');
+                loadingBar.style.width = '0%';
+                
+                // Simulate loading progress
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    loadingBar.style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        
+                        // Hide loading screen and show products page with restriction
+                        setTimeout(() => {
+                            loadingScreen.classList.add('hidden');
+                            
+                            // Hide all pages
+                            document.querySelectorAll('.page').forEach(page => {
+                                page.classList.remove('active');
+                            });
+                            
+                            // Show products page
+                            document.getElementById(pageId).classList.add('active');
+                            
+                            // Show access restricted message
+                            document.getElementById('access-restricted').style.display = 'block';
+                            document.getElementById('products-content').style.display = 'none';
+                        }, 300);
+                    }
+                }, 250); // 5 seconds total loading time
+                return;
+            }
+            
+            // Show loading screen for regular page navigation
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingBar = document.getElementById('loadingBar');
+            loadingScreen.classList.remove('hidden');
+            loadingBar.style.width = '0%';
+            
+            // Simulate loading progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 5;
+                loadingBar.style.width = `${progress}%`;
+                
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    
+                    // Hide loading screen and show target page
+                    setTimeout(() => {
+                        loadingScreen.classList.add('hidden');
+                        
+                        // Hide all pages
+                        document.querySelectorAll('.page').forEach(page => {
+                            page.classList.remove('active');
+                        });
+                        
+                        // Show selected page
+                        document.getElementById(pageId).classList.add('active');
+                        
+                        // If products page and user is logged in, show products
+                        if (pageId === 'products' && isLoggedIn) {
+                            document.getElementById('access-restricted').style.display = 'none';
+                            document.getElementById('products-content').style.display = 'block';
+                        }
+                    }, 300);
+                }
+            }, 250); // 5 seconds total loading time
+        }
+        
+        // Add event listeners to navigation links
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const pageId = this.getAttribute('data-page');
+                showPageWithLoading(pageId);
+            });
+        });
+        
+        // Account Form Toggle
+        function toggleForm() {
+            const loginForm = document.getElementById('login-form');
+            const registerForm = document.getElementById('register-form');
+            
+            if (loginForm.style.display === 'none') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+        
+        // Login Function
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (email && password) {
+                // Simulate login process
+                isLoggedIn = true;
+                currentUser = email;
+                alert('Login successful! Welcome back.');
+                // In a real application, you would send this data to a server
+                
+                // Redirect to products page after successful login
+                showPageWithLoading('products');
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+        
+        // Register Function
+        function register() {
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm').value;
+            
+            if (name && email && password && confirmPassword) {
+                if (password === confirmPassword) {
+                    // Simulate registration process
+                    isLoggedIn = true;
+                    currentUser = email;
+                    alert('Account created successfully! Welcome to IMOTech Electronics.');
+                    // In a real application, you would send this data to a server
+                    
+                    // Redirect to products page after successful registration
+                    showPageWithLoading('products');
+                } else {
+                    alert('Passwords do not match.');
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+        
+        // Create animated bubbles for different pages
+        function createBubbles(containerId, count) {
+            const bubblesContainer = document.getElementById(containerId);
+            
+            for (let i = 0; i < count; i++) {
+                const bubble = document.createElement('div');
+                bubble.classList.add('bubble');
+                
+                // Random size between 20px and 80px
+                const size = Math.random() * 60 + 20;
+                bubble.style.width = `${size}px`;
+                bubble.style.height = `${size}px`;
+                
+                // Random position
+                bubble.style.left = `${Math.random() * 100}%`;
+                bubble.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation delay
+                bubble.style.animationDelay = `${Math.random() * 15}s`;
+                
+                bubblesContainer.appendChild(bubble);
+            }
+        }
+    </script>
+</body>
+</html>
